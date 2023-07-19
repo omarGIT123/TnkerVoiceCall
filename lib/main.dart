@@ -1,14 +1,12 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:testagora/callpage.dart';
 import 'package:testagora/userid.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-const String appId = "<--Insert app ID here-->";
-
-void main() => runApp(const MaterialApp(home: MyApp()));
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const MaterialApp(home: MyApp()));
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -25,7 +23,7 @@ class _MyAppState extends State<MyApp> {
           appBar: AppBar(
             title: const Text('Get started with Voice Calling'),
           ),
-          body: getUserID()),
+          body: GetUserID()),
     );
   }
 }

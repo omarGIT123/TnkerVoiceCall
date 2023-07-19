@@ -41,6 +41,9 @@ dependencies:
   logger: ^1.4.0
   toast: ^0.3.0
   callkeep: ^0.3.3
+  cloud_firestore: ^4.8.3
+  firebase_auth: ^4.7.1
+ 
 dev_dependencies:
   flutter_test:
     sdk: flutter

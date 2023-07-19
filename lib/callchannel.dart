@@ -4,14 +4,15 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'agoraconfig.dart';
 
-class callchannel extends StatefulWidget {
-  const callchannel({super.key});
+class Callchannel extends StatefulWidget {
+  const Callchannel({super.key});
 
   @override
-  State<callchannel> createState() => _callchannelState();
+  State<Callchannel> createState() => _CallchannelState();
 }
 
-class _callchannelState extends State<callchannel> {
+class _CallchannelState extends State<Callchannel> {
+  
   int? _remoteUid; // uid of the remote user
   bool _isJoined = false; // Indicates if the local user has joined the channel
   late RtcEngine agoraEngine; // Agora engine instance
@@ -19,23 +20,25 @@ class _callchannelState extends State<callchannel> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>(); // Global key to access the scaffold
 
+
+  //  showMessage() shows snackbars of messages indicated by the handlers
   showMessage(String message) {
     scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
       content: Text(message),
     ));
   }
 
+  //release teh agora engine upon leaving the call
   @override
-  void dispose() {
+  void dispose() { 
     agoraEngine.release();
-    // TODO: implement dispose
     super.dispose();
   }
 
+  // Set up an instance of Agora engine upon joining the call
   @override
   void initState() {
     super.initState();
-    // Set up an instance of Agora engine
     setupVoiceSDKEngine();
   }
 
@@ -77,7 +80,7 @@ class _callchannelState extends State<callchannel> {
         },
       ),
     );
-    join();
+    join(); // join the channel
   }
 
   void join() async {
@@ -95,8 +98,7 @@ class _callchannelState extends State<callchannel> {
         uid: AgoraManager().id_user,
       );
     } catch (err) {
-      print('**********************************error messahe : ' +
-          err.toString());
+      print('Error message : $err');
     }
   }
 
@@ -106,13 +108,6 @@ class _callchannelState extends State<callchannel> {
     });
     agoraEngine.leaveChannel();
   }
-
-// Clean up the resources when you leave
-/**  @override
-  void dispose() async {
-    await agoraEngine.leaveChannel();
-    super.dispose();
-  } */
 
   @override
   Widget build(BuildContext context) {

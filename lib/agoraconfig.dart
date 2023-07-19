@@ -12,18 +12,14 @@ class AgoraManager {
 
   set setID(int user) {
     uid = user;
-    print('*************************************user: ' + user.toString());
-    print('*************************************uid: ' + uid.toString());
     channel = user.toString();
   }
 
   String get channelName {
-    print('*************************************Channel: ' + channel);
     return channel;
   }
 
   int get id_user {
-    print("*************************************iduser:  $uid");
     return uid;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:testagora/Firebase/firebaseAPIs.dart';
 import 'package:testagora/agoraconfig.dart';
 import 'package:testagora/callpage.dart';
 
@@ -28,6 +29,7 @@ class _GetUserIDState extends State<GetUserID> {
           child: TextFormField(
             onFieldSubmitted: (value) {
               AgoraManager().setID = int.parse(value.trim());
+              FirebaseAPIs().userCreate(iduser: value.trim());
               navigateWithoutComeBack(context, Callpage());
             },
             controller: controller,

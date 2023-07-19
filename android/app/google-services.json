@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "182800068037",
+    "project_id": "agora-tnker",
+    "storage_bucket": "agora-tnker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:182800068037:android:1aac20c97974d5c3162fac",
+        "android_client_info": {
+          "package_name": "com.example.testagora"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "182800068037-lu6vkjht0678qurva9tet6ertmq8fpfq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQMq1YDXnCvZo27CgqMTQMy4aNADE8mBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "182800068037-lu6vkjht0678qurva9tet6ertmq8fpfq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
