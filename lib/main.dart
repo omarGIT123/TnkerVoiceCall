@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  print("connected");
   runApp(const MaterialApp(home: MyApp()));
 }
 
@@ -21,7 +22,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
-            title: const Text('Get started with Voice Calling'),
+            title: const Text('Voice Calling'),
           ),
           body: GetUserID()),
     );

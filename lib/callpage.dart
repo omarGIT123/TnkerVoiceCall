@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:testagora/Firebase/firebase_APIs.dart';
 import 'package:testagora/agoraconfig.dart';
 import 'package:testagora/callchannel.dart';
 
 class Callpage extends StatefulWidget {
-  const Callpage({super.key});
+  const Callpage({super.key, required this.id});
+  final String id;
   @override
   State<Callpage> createState() => _CallpageState();
 }
@@ -49,7 +51,7 @@ class _CallpageState extends State<Callpage> {
 
   Future<String> isPeerOnline(String peerUserID) async {
     Map<dynamic, dynamic> result =
-        await _client.queryPeersOnlineStatus(["123"]);
+        await _client.queryPeersOnlineStatus([widget.id]);
     return result.toString();
   }
 
@@ -98,19 +100,19 @@ class _CallpageState extends State<Callpage> {
           ClipRRect(
             borderRadius: BorderRadius.circular(150.0),
             child: Image.network(
-              "https://media.licdn.com/dms/image/C4E03AQGjcYnfztmDDg/profile-displayphoto-shrink_800_800/0/1648028644461?e=1694044800&v=beta&t=9di7D4a3UfsHDUkyR_amKQBVTffrnO_pSpl9-Nu6r3Y",
+              "https://e7.pngegg.com/pngimages/550/997/png-clipart-user-icon-foreigners-avatar-child-face.png",
               height: 200.0,
               width: 200.0,
               fit: BoxFit.cover,
             ),
           ),
-          Text(
+          /*Text(
             "Omar Bradai",
             style: Theme.of(context).textTheme.displaySmall,
-          ),
+          ),*/
           Text(
-            "+216 23 323 323",
-            style: Theme.of(context).textTheme.titleLarge,
+            "+216 ${widget.id}",
+            style: Theme.of(context).textTheme.displaySmall,
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -119,7 +121,7 @@ class _CallpageState extends State<Callpage> {
               children: [
                 IconButton(
                   onPressed: () {
-                    inviteCall('123');
+                    inviteCall(widget.id.trim());
                     //_login(context);
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => Callchannel()));

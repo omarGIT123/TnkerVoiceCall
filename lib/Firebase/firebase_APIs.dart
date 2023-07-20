@@ -4,27 +4,22 @@ import 'package:testagora/Firebase/user_Model.dart';
 class FirebaseAPIs {
   late RegisterModel model;
 
-  static List<RegisterModel> users = [];
+  List<RegisterModel> users = [];
 
   Future<void> getAllUsers() async {
-    users.clear();
-    if (users.isEmpty) {
-      await FirebaseFirestore.instance.collection('users').get().then((value) {
-        for (var element in value.docs) {
-          return users.add(RegisterModel.fromJson(element.data()));
-        }
-      }).catchError((error) {
-        print(error.toString());
-      });
-    }
+    await FirebaseFirestore.instance.collection('users').get().then((value) {
+      for (var element in value.docs) {
+        return users.add(RegisterModel.fromJson(element.data()));
+      }
+      print(users[0].id);
+      print(users.length);
+    }).catchError((error) {
+      print(error.toString());
+    });
   }
 
-  Future<String?> userCreate({required iduser}) async {
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(iduser)
-        .collection('userinfo')
-        .add({"Number": iduser});
+  Future<String?> userCreate({required String id}) async {
+    FirebaseFirestore.instance.collection('users').add({"id": id});
     return ('success');
   }
 }

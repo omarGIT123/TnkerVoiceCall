@@ -4,7 +4,7 @@ class AgoraManager {
   }
 
   static String get token {
-    return "007eJxTYMjUZW5nlt2ksOMve9tbyZtzzov1ey2tbbvNfO9PcKn22xsKDGYppikWxmlGhpZpJiaJqRYWqUkGRskpZuaGRommiSZJqxrXpTQEMjKYJCWzMjJAIIjPzGBoZMzAAAAR7R5T";
+    return "007eJxTYMhq9/T8vuGnxj4rXYdMw292RlMWfRe2UToQ66gWcGbvSiUFBrMU0xQL4zQjQ8s0E5PEVAuL1CQDo+QUM3NDo0TTRJOkc693pDQEMjLMKt/MysgAgSA+M4OhkTEDAwD6xh6H";
   }
 
   static late int uid;

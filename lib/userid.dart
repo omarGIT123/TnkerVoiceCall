@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:testagora/Firebase/firebaseAPIs.dart';
+import 'package:testagora/Firebase/firebase_APIs.dart';
 import 'package:testagora/agoraconfig.dart';
 import 'package:testagora/callpage.dart';
+import 'package:testagora/homePage.dart';
 
 class GetUserID extends StatefulWidget {
   const GetUserID({super.key});
@@ -29,18 +30,24 @@ class _GetUserIDState extends State<GetUserID> {
           child: TextFormField(
             onFieldSubmitted: (value) {
               AgoraManager().setID = int.parse(value.trim());
-              FirebaseAPIs().userCreate(iduser: value.trim());
-              navigateWithoutComeBack(context, Callpage());
+              print(
+                  "========================================================> starting user create");
+
+              FirebaseAPIs().userCreate(id: value.trim());
+
+              print(
+                  "========================================================> end user create");
+              navigateWithoutComeBack(context, HomePage());
             },
             controller: controller,
-            cursorColor: Color(0xFF0A1C24),
-            style: TextStyle(color: Color(0xFF0A1C24)),
+            cursorColor: const Color(0xFF0A1C24),
+            style: const TextStyle(color: Color(0xFF0A1C24)),
             decoration: InputDecoration(
                 labelText: 'ID',
-                labelStyle: TextStyle(color: Color(0xFFA7A7A7)),
+                labelStyle: const TextStyle(color: Color(0xFFA7A7A7)),
                 filled: true,
                 floatingLabelBehavior: FloatingLabelBehavior.never,
-                fillColor: Color(0xFFD9D9D9),
+                fillColor: const Color(0xFFD9D9D9),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
                     borderSide:
