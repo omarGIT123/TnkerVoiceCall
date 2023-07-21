@@ -12,14 +12,12 @@ class Callchannel extends StatefulWidget {
 }
 
 class _CallchannelState extends State<Callchannel> {
-  
   int? _remoteUid; // uid of the remote user
   bool _isJoined = false; // Indicates if the local user has joined the channel
   late RtcEngine agoraEngine; // Agora engine instance
 
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>(); // Global key to access the scaffold
-
 
   //  showMessage() shows snackbars of messages indicated by the handlers
   showMessage(String message) {
@@ -30,7 +28,7 @@ class _CallchannelState extends State<Callchannel> {
 
   //release teh agora engine upon leaving the call
   @override
-  void dispose() { 
+  void dispose() {
     agoraEngine.release();
     super.dispose();
   }
@@ -67,6 +65,10 @@ class _CallchannelState extends State<Callchannel> {
             _remoteUid = remoteUid;
             _isJoined = true;
           });
+        },
+        onConnectionLost: (connection) {
+          leave();
+          Navigator.of(context).pop();
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {

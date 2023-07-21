@@ -1,9 +1,9 @@
-// ignore_for_file: deprecated_member_use
 import 'dart:async';
 import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:testagora/Firebase/firebase_APIs.dart';
+import 'package:testagora/agora_RTM.dart';
 import 'package:testagora/agoraconfig.dart';
 import 'package:testagora/callchannel.dart';
 
@@ -15,77 +15,9 @@ class Callpage extends StatefulWidget {
 }
 
 class _CallpageState extends State<Callpage> {
-  late AgoraRtmClient _client;
-  late AgoraRtmChannel _channel;
-  var logger = Logger();
-
   @override
   void initState() {
     super.initState();
-    _createClient();
-  }
-
-  void _createClient() async {
-    try {
-      _client = await AgoraRtmClient.createInstance(AgoraManager.appId);
-      print('client Success : ');
-    } catch (err) {
-      print('client error : $err');
-    }
-    _client.onLocalInvitationReceivedByPeer = (AgoraRtmLocalInvitation invite) {
-      logger.d(
-          'Local invitation received by peer: ${invite.calleeId}, content: ${invite.content}');
-    };
-    _client.onRemoteInvitationReceivedByPeer =
-        (AgoraRtmRemoteInvitation invite) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => Callchannel()));
-      logger.d(
-          'Remote invitation received by peer: ${invite.callerId}, content: ${invite.content}');
-    };
-
-    _client.onRemoteInvitationAccepted = (invite) {};
-
-    _login();
-  }
-
-  Future<String> isPeerOnline(String peerUserID) async {
-    Map<dynamic, dynamic> result =
-        await _client.queryPeersOnlineStatus([widget.id]);
-    return result.toString();
-  }
-
-  Future<void> inviteCall(final String peerUid) async {
-    try {
-      AgoraRtmLocalInvitation? invitation = await _client
-          .getRtmCallManager()
-          .createLocalInvitation(
-              peerUid); // create invitation the specified user
-      invitation.content = '${AgoraManager().id_user} is calling !';
-      logger.d(invitation.content ?? '');
-      await _client
-          .sendLocalInvitation(invitation.toJson()); // send the invitation
-      logger.d('Send local invitation success.');
-    } catch (errorCode) {
-      logger.d('Send local invitation error: $errorCode');
-    }
-  }
-
-  void _login() async {
-    if (AgoraManager().id_user.toString().isEmpty) {
-      print('Error no User ID');
-      return;
-    }
-    try {
-      await _client.login(
-          null,
-          AgoraManager()
-              .id_user
-              .toString()
-              .trim()); //login the user to the signalling server
-    } catch (err) {
-      print('login error :  $err');
-    }
   }
 
   @override
@@ -121,7 +53,7 @@ class _CallpageState extends State<Callpage> {
               children: [
                 IconButton(
                   onPressed: () {
-                    inviteCall(widget.id.trim());
+                    AgoraRtmAPIS(context).inviteCall(widget.id.trim());
                     //_login(context);
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => Callchannel()));

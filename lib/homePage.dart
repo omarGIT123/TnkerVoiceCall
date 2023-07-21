@@ -5,6 +5,7 @@ import 'package:testagora/agoraconfig.dart';
 import 'package:testagora/callpage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'Firebase/user_Model.dart';
+import 'agora_RTM.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,21 +15,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late FirebaseAPIs firebase_get_users = FirebaseAPIs();
   @override
   void initState() {
     super.initState();
-    users.clear();
-    getOnStartup();
+    //users.clear();
+    // getOnStartup();
+    FirebaseAPIs.getAllUsers().then((value) {
+      setState(() {});
+    });
+    AgoraRtmAPIS(context).createClient();
   }
 
   @override
   void dispose() {
-    users.clear();
-    // TODO: implement dispose
+    FirebaseAPIs.users.clear();
     super.dispose();
   }
 
-  //to get all numbers
+/**  //to get all numbers
   List<RegisterModel> users = [];
   void getOnStartup() async {
     users.clear();
@@ -49,7 +54,7 @@ class _HomePageState extends State<HomePage> {
         print(error.toString());
       });
     }
-  }
+  } */
 
   /* // to update when changes occur
   var listener = FirebaseFirestore.instance
@@ -88,7 +93,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Container(
               child: Text(
-                'Users phone numbers : ${users.length}',
+                'Users phone numbers : ${FirebaseAPIs.users.length}',
                 style: TextStyle(fontSize: 24),
               ),
             ),
@@ -102,17 +107,17 @@ class _HomePageState extends State<HomePage> {
                   physics: const BouncingScrollPhysics(),
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   // Let the ListView know how many items it needs to build.
-                  itemCount: users.length,
+                  itemCount: FirebaseAPIs.users.length,
                   // Provide a builder function. This is where the magic happens.
                   // Convert each item into a widget based on the type of item it is.
                   itemBuilder: (context, index) {
                     final item = List<InkWell>.generate(
-                        users.length,
+                        FirebaseAPIs.users.length,
                         (index) => InkWell(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => Callpage(
-                                          id: users[index].id,
+                                          id: FirebaseAPIs.users[index].id,
                                         )));
                               },
                               child: Column(
@@ -150,12 +155,12 @@ class _HomePageState extends State<HomePage> {
                                           color: Color(0xFF0A1C24)),
                                       child: Center(
                                           child: Text(
-                                        users[index].id ==
+                                        FirebaseAPIs.users[index].id ==
                                                 AgoraManager()
                                                     .id_user
                                                     .toString()
-                                            ? "+216 ${users[index].id} (My phone number)"
-                                            : "+216 ${users[index].id}",
+                                            ? "+216 ${FirebaseAPIs.users[index].id} (My phone number)"
+                                            : "+216 ${FirebaseAPIs.users[index].id}",
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
                                             color: Colors.white,
