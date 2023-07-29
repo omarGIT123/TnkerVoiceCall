@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:testagora/Firebase/firebase_APIs.dart';
 import 'package:testagora/agoraconfig.dart';
-import 'package:testagora/callpage.dart';
-import 'package:testagora/homePage.dart';
+import 'package:testagora/home_page.dart';
 
 class GetUserID extends StatefulWidget {
   const GetUserID({super.key});
@@ -30,14 +29,8 @@ class _GetUserIDState extends State<GetUserID> {
           child: TextFormField(
             onFieldSubmitted: (value) {
               AgoraManager().setID = int.parse(value.trim());
-              print(
-                  "========================================================> starting user create");
-
-              FirebaseAPIs().userCreate(id: value.trim());
-
-              print(
-                  "========================================================> end user create");
-              navigateWithoutComeBack(context, HomePage());
+              FirebaseAPIs().userCreate(id: value.trim(), token: '');
+              navigateWithoutComeBack(context, const HomePage());
             },
             controller: controller,
             cursorColor: const Color(0xFF0A1C24),

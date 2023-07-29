@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:testagora/Firebase/firebase_APIs.dart';
 import 'package:testagora/agoraconfig.dart';
 import 'package:testagora/callpage.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'Firebase/user_Model.dart';
+import 'package:testagora/notifications/notifications.dart';
 import 'agora_RTM.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,72 +14,93 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late FirebaseAPIs firebase_get_users = FirebaseAPIs();
+  late FirebaseAPIs firebaseGetUsers = FirebaseAPIs();
   @override
   void initState() {
     super.initState();
     //users.clear();
     // getOnStartup();
+    _initializeFirebaseMessage();
+    getOnstart();
+    AgoraRtmAPIS(context).createClient();
+  }
+
+  void _initializeFirebaseMessage() async {
+    try {
+      AwesomeNotif.initFirebaseMessage(context);
+    } catch (e) {
+      print('Error initializing Firebase message: $e');
+    }
+  }
+
+  void getOnstart() {
     FirebaseAPIs.getAllUsers().then((value) {
       setState(() {});
     });
-    AgoraRtmAPIS(context).createClient();
   }
 
   @override
   void dispose() {
+    AwesomeNotif.cancelFCM();
+    AwesomeNotifications().dispose();
     FirebaseAPIs.users.clear();
     super.dispose();
   }
 
-/**  //to get all numbers
-  List<RegisterModel> users = [];
-  void getOnStartup() async {
-    users.clear();
-    if (users.isEmpty) {
-      await FirebaseFirestore.instance.collection('users').get().then((value) {
-        print('here');
-        for (var document in value.docs) {
-          setState(() {
-            if (users.contains(RegisterModel.fromJson(document.data())) ==
-                false) {
-              users.add(RegisterModel.fromJson(document.data()));
-            }
-          });
-        }
-        print(users[0].id);
-        print(users.length);
-      }).catchError((error) {
-        print(error.toString());
-      });
-    }
-  } */
+// //to get all numbers
+//   List<RegisterModel> users = [];
+//   void getOnStartup() async {
+//     users.clear();
+//     if (users.isEmpty) {
+//       await FirebaseFirestore.instance.collection('users').get().then((value) {
+//         print('here');
+//         for (var document in value.docs) {
+//           setState(() {
+//             if (users.contains(RegisterModel.fromJson(document.data())) ==
+//                 false) {
+//               users.add(RegisterModel.fromJson(document.data()));
+//             }
+//           });
+//         }
+//         print(users[0].id);
+//         print(users.length);
+//       }).catchError((error) {
+//         print(error.toString());
+//       });
+//     }
+//   }
 
-  /* // to update when changes occur
-  var listener = FirebaseFirestore.instance
-      .collection('users')
-      .snapshots()
-      .listen((event) {
-    for (var change in event.docChanges) {
-      switch (change.type) {
-        case DocumentChangeType.added:
-          if (change.doc.data() != null) {
-            if (users.contains(RegisterModel.fromJson(change.doc.data()!)) ==
-                false) {
-              users.add(RegisterModel.fromJson(change.doc.data()!));
-            }
-          }
-          break;
-        case DocumentChangeType.modified:
-          break;
-        case DocumentChangeType.removed:
-          break;
-      }
-    }
-  }); */
+  // // to update when changes occur
+  // var listener = FirebaseFirestore.instance
+  //     .collection('users')
+  //     .snapshots()
+  //     .listen((event) {
+  //   for (var change in event.docChanges) {
+  //     switch (change.type) {
+  //       case DocumentChangeType.added:
+  //         if (change.doc.data() != null) {
+  //           if (users.contains(RegisterModel.fromJson(change.doc.data()!)) ==
+  //               false) {
+  //             users.add(RegisterModel.fromJson(change.doc.data()!));
+  //           }
+  //         }
+  //         break;
+  //       case DocumentChangeType.modified:
+  //         break;
+  //       case DocumentChangeType.removed:
+  //         break;
+  //     }
+  //   }
+  // });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.refresh),
+          onPressed: () {
+            getOnstart();
+          }),
       appBar: AppBar(
         title: const Text("voice call"),
       ),
@@ -91,17 +111,15 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.1,
             ),
-            Container(
-              child: Text(
-                'Users phone numbers : ${FirebaseAPIs.users.length}',
-                style: TextStyle(fontSize: 24),
-              ),
+            Text(
+              'Users phone numbers : ${FirebaseAPIs.users.length}',
+              style: const TextStyle(fontSize: 24),
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.1,
             ),
             Expanded(
-              child: Container(
+              child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.7,
                 child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
@@ -152,13 +170,11 @@ class _HomePageState extends State<HomePage> {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(20),
-                                          color: Color(0xFF0A1C24)),
+                                          color: const Color(0xFF0A1C24)),
                                       child: Center(
                                           child: Text(
                                         FirebaseAPIs.users[index].id ==
-                                                AgoraManager()
-                                                    .id_user
-                                                    .toString()
+                                                AgoraManager().idUser.toString()
                                             ? "+216 ${FirebaseAPIs.users[index].id} (My phone number)"
                                             : "+216 ${FirebaseAPIs.users[index].id}",
                                         textAlign: TextAlign.center,

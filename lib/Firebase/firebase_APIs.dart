@@ -14,16 +14,20 @@ class FirebaseAPIs {
             users.add(RegisterModel.fromJson(element.data()));
           }
         }
-        print(users[0].id);
-        print(users.length);
+        // print(users[0].id);
+        // print(users.length);
       }).catchError((error) {
-        print(error.toString());
+        // print(error.toString());
       });
     }
   }
 
-  Future<String?> userCreate({required String id}) async {
-    FirebaseFirestore.instance.collection('users').add({"id": id});
+  Future<String?> userCreate(
+      {required String id, required String token}) async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .set({"id": id, 'token': token});
     return ('success');
   }
 }

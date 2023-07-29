@@ -1,8 +1,4 @@
-import 'dart:async';
-import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
-import 'package:testagora/Firebase/firebase_APIs.dart';
 import 'package:testagora/agora_RTM.dart';
 import 'package:testagora/agoraconfig.dart';
 import 'package:testagora/callchannel.dart';
@@ -52,15 +48,22 @@ class _CallpageState extends State<Callpage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
+                  alignment: Alignment.center,
                   onPressed: () {
                     AgoraRtmAPIS(context).inviteCall(widget.id.trim());
                     //_login(context);
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Callchannel()));
+                    print(
+                        '=========================================================================');
+                    print(AgoraManager().channelName);
+                    AgoraRtmAPIS(context).setamIcaller = true;
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Callchannel(
+                              id: AgoraManager().channelName.trim(),
+                            )));
                   },
                   icon: const Icon(
-                    Icons.phone,
-                    size: 35,
+                    Icons.phone_rounded,
+                    size: 50,
                   ),
                   color: Colors.teal,
                 ),
