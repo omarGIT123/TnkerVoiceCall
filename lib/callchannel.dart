@@ -75,12 +75,16 @@ class _CallchannelState extends State<Callchannel> {
   }
 
   void stopTimer() {
-    setState(() => countdownTimer!.cancel());
+    if (mounted) {
+      setState(() => countdownTimer!.cancel());
+    }
   }
 
   void resetTimer() {
     stopTimer();
-    setState(() => myDuration = const Duration(minutes: 1));
+    if (mounted) {
+      setState(() => myDuration = const Duration(minutes: 1));
+    }
   }
 
   void setCountDown() {
@@ -136,9 +140,13 @@ class _CallchannelState extends State<Callchannel> {
           setState(() {
             ismejoined = true;
             text = "Calling...";
-            myDuration = const Duration(seconds: 5);
+            myDuration = const Duration(seconds: 20);
             startTimer();
           });
+          if (AgoraRtmAPIS.iamcaller == false && _isJoined == false) {
+            leave();
+            Navigator.of(context).pop();
+          }
         },
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           //print('Remote user uid:$remoteUid joined the channel');
@@ -269,6 +277,7 @@ class _CallchannelState extends State<Callchannel> {
   onModechanged() {
     setState(() {
       isSpeaker = !isSpeaker;
+      agoraEngine.setDefaultAudioRouteToSpeakerphone(false);
       agoraEngine.setEnableSpeakerphone(isSpeaker);
     });
   }
@@ -321,81 +330,83 @@ class _CallchannelState extends State<Callchannel> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          IconButton(
-                              alignment: Alignment.center,
-                              icon: isMuted
-                                  ? const Icon(
-                                      Icons.mic_off_rounded,
-                                      size: 40,
-                                      color: Colors.blueGrey,
-                                    )
-                                  : const Icon(
-                                      Icons.mic_rounded,
-                                      size: 40,
-                                      color: Colors.blue,
-                                    ),
-                              onPressed: () => {onMuteChecked()}),
-                          !isMuted
-                              ? const Text(
-                                  "Mute",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.blue, fontSize: 20),
-                                )
-                              : const Text(
-                                  "Unmute",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.blueGrey, fontSize: 20),
-                                ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.1,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          IconButton(
-                              alignment: Alignment.center,
-                              icon: isSpeaker
-                                  ? const Icon(
-                                      Icons.volume_up_rounded,
-                                      size: 40,
-                                      color: Colors.greenAccent,
-                                    )
-                                  : const Icon(
-                                      Icons.volume_down_rounded,
-                                      size: 40,
-                                      color: Colors.blue,
-                                    ),
-                              onPressed: () => {onModechanged()}),
-                          isSpeaker
-                              ? const Text(
-                                  "Speaker",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.greenAccent, fontSize: 20),
-                                )
-                              : const Text(
-                                  "phone",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.blue, fontSize: 20),
-                                ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  if (ismejoined)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                                alignment: Alignment.center,
+                                icon: isMuted
+                                    ? const Icon(
+                                        Icons.mic_off_rounded,
+                                        size: 40,
+                                        color: Colors.blueGrey,
+                                      )
+                                    : const Icon(
+                                        Icons.mic_rounded,
+                                        size: 40,
+                                        color: Colors.blue,
+                                      ),
+                                onPressed: () => {onMuteChecked()}),
+                            !isMuted
+                                ? const Text(
+                                    "Mute",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.blue, fontSize: 20),
+                                  )
+                                : const Text(
+                                    "Unmute",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.blueGrey, fontSize: 20),
+                                  ),
+                          ],
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.1,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                                alignment: Alignment.center,
+                                icon: isSpeaker
+                                    ? const Icon(
+                                        Icons.volume_up_rounded,
+                                        size: 40,
+                                        color: Colors.greenAccent,
+                                      )
+                                    : const Icon(
+                                        Icons.volume_down_rounded,
+                                        size: 40,
+                                        color: Colors.blue,
+                                      ),
+                                onPressed: () => {onModechanged()}),
+                            isSpeaker
+                                ? const Text(
+                                    "Speaker",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.greenAccent,
+                                        fontSize: 20),
+                                  )
+                                : const Text(
+                                    "phone",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.blue, fontSize: 20),
+                                  ),
+                          ],
+                        ),
+                      ],
+                    ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.05,
                   ),
