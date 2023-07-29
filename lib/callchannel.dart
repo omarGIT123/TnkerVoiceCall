@@ -22,7 +22,7 @@ class _CallchannelState extends State<Callchannel> {
   bool isMuted = false;
   Timer? countdownTimer;
   Duration myDuration = const Duration(minutes: 1);
-  late String text = "";
+  late String text = "Connecting to call ...";
   bool ismejoined = false;
   int? _remoteUid; // uid of the remote user
   bool _isJoined = false; // Indicates if the local user has joined the channel
@@ -94,21 +94,23 @@ class _CallchannelState extends State<Callchannel> {
         final seconds = myDuration.inSeconds - reduceSecondsBy;
         if (seconds < 0) {
           countdownTimer!.cancel();
-          if (_isJoined) {
-            leave();
-            Navigator.of(context).pop();
-          } else if (!_isJoined) {
-            print('cancelling');
-            AgoraRtmAPIS(context)
-                .cancelLocalInvitation(AgoraRtmAPIS.inviteTocall);
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            }
-          }
         } else {
           myDuration = Duration(seconds: seconds);
         }
       });
+      if (countdownTimer!.isActive == false) {
+        if (_isJoined) {
+          leave();
+          Navigator.of(context).pop();
+        } else if (!_isJoined) {
+          print('cancelling');
+          AgoraRtmAPIS(context)
+              .cancelLocalInvitation(AgoraRtmAPIS.inviteTocall);
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
+        }
+      }
     }
   }
 
@@ -142,11 +144,8 @@ class _CallchannelState extends State<Callchannel> {
             text = "Calling...";
             myDuration = const Duration(seconds: 20);
             startTimer();
+            AgoraRtmAPIS.withoutContext().setincall = true;
           });
-          if (AgoraRtmAPIS.iamcaller == false && _isJoined == false) {
-            leave();
-            Navigator.of(context).pop();
-          }
         },
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           //print('Remote user uid:$remoteUid joined the channel');
@@ -165,11 +164,7 @@ class _CallchannelState extends State<Callchannel> {
           leave();
           Navigator.of(context).pop();
         },
-        onLocalUserRegistered: (uid, userAccount) {
-          setState(() {
-            text = "Connecting to call ...";
-          });
-        },
+        onLocalUserRegistered: (uid, userAccount) {},
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
           showMessage("Remote user uid:$remoteUid left the channel");
@@ -256,6 +251,7 @@ class _CallchannelState extends State<Callchannel> {
       _isJoined = false;
       ismejoined = false;
       AgoraRtmAPIS(context).setamIcaller = false;
+      AgoraRtmAPIS.withoutContext().setincall = false;
     });
     agoraEngine.leaveChannel();
   }
@@ -454,8 +450,6 @@ class _CallchannelState extends State<Callchannel> {
                                 }
                               } else if (ismejoined == true) {
                                 setState(() {
-                                  resetTimer();
-                                  stopTimer();
                                   leave();
                                 });
                                 if (Navigator.of(context).canPop()) {

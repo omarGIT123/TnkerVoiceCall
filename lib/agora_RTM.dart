@@ -18,7 +18,7 @@ class AgoraRtmAPIS {
   static late LocalInvitation inviteTocall;
   static bool notifpushed = false;
   static String? token;
-
+  static bool isincall = false;
   String? get getToken {
     return token;
   }
@@ -29,6 +29,14 @@ class AgoraRtmAPIS {
 
   bool get amIcaller {
     return iamcaller;
+  }
+
+  set setincall(bool isinthecall) {
+    isincall = isinthecall;
+  }
+
+  bool get getisincall {
+    return isincall;
   }
 
   set setamIcaller(bool amIcaller) {
@@ -78,15 +86,19 @@ class AgoraRtmAPIS {
           'Local invitation received by peer: ${invite.calleeId}, content: ${invite.content}');
     };
     _callManager.onRemoteInvitationReceived = (RemoteInvitation invite) async {
-      setamIcaller = false;
-      // Navigator.of(context).push(MaterialPageRoute(
-      //     builder: (context) => Callchannel(
-      //           id: invite.callerId,
-      //         )));
-      invitationTocall = invite;
-      sendAndroidNotification(getToken, invite.callerId);
-      logger.d(
-          'Remote invitation received by peer: ${invite.callerId}, content: ${invite.content}');
+      if (!getisincall) {
+        setamIcaller = false;
+        // Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) => Callchannel(
+        //           id: invite.callerId,
+        //         )));
+        invitationTocall = invite;
+        sendAndroidNotification(getToken, invite.callerId);
+        logger.d(
+            'Remote invitation received by peer: ${invite.callerId}, content: ${invite.content}');
+      } else {
+        refuseRemoteInvitation(invite);
+      }
     };
 
     _callManager.onLocalInvitationRefused = (invite, response) {

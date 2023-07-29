@@ -56,14 +56,6 @@ Future<void> backgroundhandler(RemoteMessage message) async {
   });
 }
 
-const androidConfig = FlutterBackgroundAndroidConfig(
-  notificationTitle: "Tnker Background",
-  notificationText: "Background notification",
-  notificationImportance: AndroidNotificationImportance.Max,
-  notificationIcon: AndroidResource(
-      name: 'background_icon',
-      defType: 'drawable'), // Default is ic_launcher from folder mipmap
-);
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -76,7 +68,8 @@ Future<void> main() async {
         ledColor: Colors.white,
         importance: NotificationImportance.Max,
         channelShowBadge: true,
-        locked: true,
+        playSound: true,
+        locked: false,
         defaultRingtoneType: DefaultRingtoneType.Ringtone)
   ]);
   FirebaseMessaging.onBackgroundMessage(backgroundhandler);
@@ -87,8 +80,6 @@ Future<void> main() async {
     }
   });
 
-  await FlutterBackground.initialize(androidConfig: androidConfig);
-  await FlutterBackground.enableBackgroundExecution();
   // print("//////////////////////////////////////////////");
   // print(h);
 
